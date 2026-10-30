@@ -1,7 +1,7 @@
 {
   "id": "freewrite",
   "name": "FreeWrite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.5.0",
   "description": "Rewrite one note into ready-to-publish drafts for multiple platforms using a local OpenCode runtime.",
   "author": "freeWrite",

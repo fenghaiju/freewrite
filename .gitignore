@@ -8,3 +8,10 @@ coverage/
 Thumbs.db
 .vscode/
 .idea/
+
+# Screenshot harness build artifacts. `docs/mockup/assets/` holds Obsidian's
+# own CSS/JS/fonts extracted from the local install and must not be shipped;
+# regenerate it with `node docs/mockup/extract-obsidian-assets.mjs`, then build
+# the bundle with `node docs/mockup/esbuild.mockup.config.mjs`.
+docs/mockup/assets/
+docs/mockup/bundle.js

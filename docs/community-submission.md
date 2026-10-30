@@ -65,3 +65,34 @@ are cleared.
 
 `node scripts/verify-release.mjs` checks the first four points against the
 built artefacts, and it runs on every push in CI.
+
+## End-to-end verification
+
+The five runtime chains were exercised against a live OpenCode server with the
+plugin's own source files, through the scripts in `tests/e2e/`. Each script
+prints a `PASS`/`FAIL` line per check and exits non-zero on any failure.
+
+| Chain | Script | What it proves |
+| --- | --- | --- |
+| Spawn the server | `npx vite-node tests/e2e/run-server.ts [pathToOpenCode]` | Discovery finds the executable, the provider config is written, a free port is bound and the headless server starts and stops. |
+| Stream over SSE | `npx vite-node tests/e2e/run-server.ts` | A session is created and the assistant's parts arrive on the event stream. |
+| Real rewrite | `npx vite-node tests/e2e/run-pipeline.ts [baseUrl] [model]` | One session rewrites two platforms; the reused-session replay no longer truncates the second draft. |
+| Clipboard publish | `npx vite-node tests/e2e/run-publish.ts` | The plugin's own code decides the clipboard text and the compose page that opens. |
+| Bridge publish | `npx vite-node tests/e2e/run-publish.ts` | A real HTTP server receives the versioned payload with the configured headers. |
+
+The unit suite (`npm test`, 58 cases) and the quality gate (`npm run check`:
+typecheck, lint, test, build) pass on every change.
+
+## Regenerating the screenshots
+
+The three README images are rendered from the plugin's real UI classes, not
+from hand-written markup, so they cannot drift from the shipped plugin:
+
+```bash
+node docs/mockup/extract-obsidian-assets.mjs   # pull app.css/fonts from the local Obsidian install
+node docs/mockup/esbuild.mockup.config.mjs      # bundle the render entry against the DOM shim
+powershell -NoProfile -ExecutionPolicy Bypass -File docs/mockup/render.ps1
+```
+
+`docs/mockup/assets/` and `docs/mockup/bundle.js` are generated and gitignored;
+only the harness source is committed.

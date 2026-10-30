@@ -28,7 +28,7 @@ function Trim-Bottom {
 			$last = 0
 			for ($y = $height - 1; $y -ge 0; $y--) {
 				$rowHasContent = $false
-				for ($x = 0; $x -lt $width; $x += 4) {
+				for ($x = 0; $x -lt $width; $x++) {
 					if ($bitmap.GetPixel($x, $y).ToArgb() -ne $background) {
 						$rowHasContent = $true
 						break
@@ -83,8 +83,9 @@ $pages = @(
 	@{ Name = "inline-modal"; Width = 760 }
 )
 
+$index = Join-Path $mockup "index.html"
+
 foreach ($page in $pages) {
-	$source = Join-Path $mockup "$($page.Name).html"
 	$target = Join-Path $out "$($page.Name).png"
 
 	if (Test-Path $target) {
@@ -92,14 +93,16 @@ foreach ($page in $pages) {
 	}
 
 	# Render tall, then trim the empty space below the content.
+	$url = "file:///$($index -replace '\\', '/')?scene=$($page.Name)"
 	$arguments = @(
 		"--headless=new",
 		"--disable-gpu",
 		"--hide-scrollbars",
 		"--force-device-scale-factor=2",
-		"--window-size=$($page.Width),3000",
+		"--window-size=$($page.Width),5000",
+		"--virtual-time-budget=4000",
 		"--screenshot=$target",
-		"file:///$($source -replace '\\', '/')"
+		$url
 	)
 
 	$ErrorActionPreference = "SilentlyContinue"

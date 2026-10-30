@@ -1,6 +1,6 @@
 {
   "name": "freewrite",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multi-platform AI writing assistant powered by a local OpenCode runtime.",
   "main": "main.js",
   "type": "module",

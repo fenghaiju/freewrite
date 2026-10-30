@@ -1,262 +1,107 @@
 /*
- * Screenshot mockups for the README.
+ * Layout for the README screenshots.
  *
- * These files reproduce the DOM that the plugin builds, and load the real
- * styles.css, so the rendered images match what the plugin looks like.
- * They are not shipped with the plugin.
+ * The plugin markup and the Obsidian theme come from the real sources, so this
+ * file only fixes the viewport so the panels are framed the way the plugin is
+ * used: the workbench in a workspace leaf, the settings in the settings modal
+ * and the inline rewrite in a dialog.
  */
 
-:root {
-	--background-primary: #1e1e1e;
-	--background-primary-alt: #1a1a1a;
-	--background-primary-secondary: #161616;
-	--background-secondary: #161616;
-	--background-secondary-alt: #000000;
-	--background-modifier-border: #333333;
-	--background-modifier-border-hover: #424242;
-	--background-modifier-form-field: #232323;
-	--background-modifier-form-field-hover: #2e2e2e;
-	--background-modifier-hover: rgba(255, 255, 255, 0.075);
-	--text-normal: #dadada;
-	--text-muted: #b3b3b3;
-	--text-faint: #666666;
-	--text-accent: #a882ff;
-	--text-on-accent: #ffffff;
-	--text-success: #4caf50;
-	--text-warning: #e0a54e;
-	--text-error: #e05252;
-	--interactive-accent: #7f6df2;
-	--interactive-hover: #8f7ff4;
-	--font-ui-smaller: 12px;
-	--font-ui-small: 13px;
-	--font-ui-medium: 15px;
-	--font-ui-large: 17px;
-	--font-semibold: 600;
-	--radius-s: 4px;
-	--radius-m: 8px;
-	--size-4-1: 4px;
-	--size-4-2: 8px;
-	--size-4-3: 12px;
-	--size-4-4: 16px;
-	--font-interface: "Inter", "Segoe UI", "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
-}
-
-* {
-	box-sizing: border-box;
-}
-
+html,
 body {
-	margin: 0;
-	background: var(--background-primary);
-	color: var(--text-normal);
-	font-family: var(--font-interface);
-	font-size: var(--font-ui-small);
-	line-height: 1.5;
-	-webkit-font-smoothing: antialiased;
+	height: auto;
+	min-height: 100%;
+	overflow: visible;
 }
 
-h3 {
-	margin: 0;
-	font-size: var(--font-ui-large);
-	font-weight: 600;
+/* Obsidian sizes the body to the viewport and clips its children. For a
+   full-page screenshot the body must grow with its content instead. */
+body {
+	contain: none;
 }
 
-h4 {
-	margin: 0;
-	font-size: var(--font-ui-small);
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	color: var(--text-muted);
+/* The workbench fills the leaf. Obsidian pins `.workspace-leaf` with
+   `contain: strict !important` (size+paint), which collapses the leaf to zero
+   height and clips its descendants away. Both overrides must be `!important`
+   to win; mockup.css loads after app.css so source order settles the tie. */
+.workspace,
+.workspace-split,
+.workspace-leaf,
+.workspace-leaf-content {
+	height: auto !important;
+	min-height: 100%;
+	overflow: visible !important;
+	position: static;
+	contain: none !important;
 }
 
-button {
-	font-family: inherit;
-	font-size: inherit;
-	cursor: pointer;
+.workspace-split {
+	display: block;
 }
 
-/* Obsidian lookalikes for the settings page. */
-
-.setting-item {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--size-4-4);
-	padding: var(--size-4-2) 0;
-	border-top: 1px solid var(--background-modifier-border);
+.workspace-leaf {
+	display: block;
 }
 
-.setting-item.setting-item-heading {
-	padding-top: var(--size-4-4);
+/* The plugin renders into the view content, so the padding comes from the
+   plugin stylesheet rather than from the workspace. */
+.view-content {
+	height: auto;
+	padding: 0;
+	overflow: visible;
+	position: static;
+	contain: none;
 }
 
-.setting-item-info {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	min-width: 0;
-}
-
-.setting-item-name {
-	font-weight: var(--font-semibold);
-}
-
-.setting-item-description {
-	color: var(--text-muted);
-	font-size: var(--font-ui-smaller);
-}
-
-.setting-item-control {
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	gap: var(--size-4-2);
-	flex-shrink: 0;
-}
-
-.setting-item-control input[type="text"] {
-	width: 240px;
-}
-
-input[type="text"],
-textarea,
-select {
-	font-family: inherit;
-	font-size: var(--font-ui-smaller);
-	color: var(--text-normal);
-	background: var(--background-modifier-form-field);
-	border: 1px solid var(--background-modifier-border);
-	border-radius: var(--radius-s);
-	padding: 5px var(--size-4-2);
-	outline: none;
-}
-
-textarea {
+/* The settings modal is shown at its natural size instead of the 85vh cap. */
+.modal-container {
+	position: static;
+	height: auto;
+	inset: auto;
 	width: 100%;
-	min-height: 64px;
-	resize: none;
-	line-height: 1.6;
+	display: block;
 }
 
-select {
-	appearance: none;
-	padding-right: 26px;
-	background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
-		linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
-	background-position: calc(100% - 14px) 12px, calc(100% - 9px) 12px;
-	background-size: 5px 5px, 5px 5px;
-	background-repeat: no-repeat;
+.modal-container .modal-bg {
+	display: none;
 }
 
-.checkbox-container {
+.modal.mod-settings {
+	width: 100%;
+	max-width: none;
+	height: auto;
+	max-height: none;
+}
+
+.modal-content {
+	overflow: visible;
+}
+
+.vertical-tab-content-container {
+	overflow: visible;
+}
+
+.vertical-tab-content {
+	height: auto;
+	overflow: visible;
+}
+
+/* The inline dialog is framed near the top so the shot stays tight; the
+   empty space below is cropped by the render script. */
+body.scene-inline-modal {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
+	justify-content: center;
+	padding: 48px 0;
+}
+
+body.scene-inline-modal .modal-container {
+	display: flex;
+	align-items: flex-start;
 	justify-content: center;
 }
 
-.checkbox-container.is-enabled::after {
-	content: "";
-	width: 14px;
-	height: 14px;
-	border-radius: var(--radius-s);
-	background: var(--interactive-accent);
-	box-shadow: inset 0 0 0 2px var(--background-primary);
-	clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 80% 0, 37% 68%);
-}
-
-input[type="checkbox"] {
-	appearance: none;
-	width: 14px;
-	height: 14px;
-	margin: 0;
-	border: 1px solid var(--background-modifier-border-hover);
-	border-radius: var(--radius-s);
-	background: var(--background-modifier-form-field);
-}
-
-input[type="checkbox"]:checked {
-	background: var(--interactive-accent);
-	border-color: var(--interactive-accent);
-	background-image: linear-gradient(45deg, transparent 50%, #fff 50%),
-		linear-gradient(135deg, #fff 50%, transparent 50%);
-	background-position: calc(50% - 2px) calc(50% - 1px), calc(50% + 2px) calc(50% + 1px);
-	background-size: 4px 4px, 4px 4px;
-	background-repeat: no-repeat;
-}
-
-.mod-cta {
-	background: var(--interactive-accent);
-	border: 1px solid var(--interactive-accent);
-	color: var(--text-on-accent);
-}
-
-.mod-warning {
-	background: var(--text-error);
-	border: 1px solid var(--text-error);
-	color: var(--text-on-accent);
-}
-
-/* Obsidian lookalike for the plugin settings shell. */
-
-.settings-container {
-	display: flex;
-	min-height: 100%;
-}
-
-.settings-nav {
-	width: 220px;
-	flex-shrink: 0;
-	padding: var(--size-4-4) var(--size-4-3);
-	border-right: 1px solid var(--background-modifier-border);
-	background: var(--background-primary-alt);
-}
-
-.settings-nav-title {
-	font-size: var(--font-ui-smaller);
-	text-transform: uppercase;
-	letter-spacing: 0.06em;
-	color: var(--text-faint);
-	margin: var(--size-4-4) 0 var(--size-4-2);
-	padding: 0 var(--size-4-2);
-}
-
-.settings-nav-item {
-	padding: 4px var(--size-4-2);
-	border-radius: var(--radius-s);
-	color: var(--text-muted);
-}
-
-.settings-nav-item.is-active {
-	background: var(--background-modifier-hover);
-	color: var(--text-normal);
-}
-
-.settings-body {
-	flex: 1;
-	padding: var(--size-4-4);
-	max-width: 780px;
-}
-
-.settings-title {
-	font-size: var(--font-ui-large);
-	font-weight: 600;
-	margin-bottom: var(--size-4-4);
-}
-
-/* Obsidian lookalike for the workbench sidebar. */
-
-.view-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: var(--size-4-2) var(--size-4-3);
-	border-bottom: 1px solid var(--background-modifier-border);
-	background: var(--background-primary-alt);
-	font-size: var(--font-ui-small);
-	color: var(--text-muted);
-}
-
-.view-header-title {
-	font-weight: var(--font-semibold);
-	color: var(--text-normal);
+body.scene-inline-modal .modal {
+	width: var(--dialog-width);
+	max-width: 80vw;
 }
