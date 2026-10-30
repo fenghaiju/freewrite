@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>freeWrite workbench</title>
+<link rel="stylesheet" href="../../styles.css" />
+<link rel="stylesheet" href="mockup.css" />
+</head>
+<body>
+	<div class="view-header">
+		<div class="view-header-title">freeWrite</div>
+		<div>ribbon</div>
+	</div>
+
+	<div class="freewrite-workbench">
+		<div class="freewrite-header">
+			<div class="freewrite-header-title"><h3>freeWrite</h3></div>
+			<div class="freewrite-status freewrite-status-on">OpenCode 0.7.3</div>
+			<div class="freewrite-header-actions">
+				<button class="freewrite-icon-button" aria-label="Open settings">
+					<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="12" cy="12" r="3"></circle>
+						<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+					</svg>
+				</button>
+			</div>
+		</div>
+
+		<div class="freewrite-section">
+			<h4>Source</h4>
+			<div class="freewrite-source-meta">
+				<span class="freewrite-source-name">从技术到表达：一次 AI 辅助写作的实践</span>
+				<span class="freewrite-source-size">3,842 characters</span>
+			</div>
+			<div class="freewrite-source-actions">
+				<button class="freewrite-button mod-cta">Rewrite for platforms</button>
+				<button class="freewrite-button">Clear</button>
+			</div>
+		</div>
+
+		<div class="freewrite-section">
+			<h4>Platforms</h4>
+			<div class="freewrite-platform-list">
+				<div class="freewrite-platform-row is-enabled">
+					<input type="checkbox" checked />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">微信公众号</span>
+						<span class="freewrite-platform-hint">title ≤ 64</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row is-enabled">
+					<input type="checkbox" checked />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">知乎</span>
+						<span class="freewrite-platform-hint">title ≤ 100</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row is-enabled">
+					<input type="checkbox" checked />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">CSDN</span>
+						<span class="freewrite-platform-hint">title ≤ 100</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row">
+					<input type="checkbox" />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">掘金</span>
+						<span class="freewrite-platform-hint">title ≤ 60</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row is-enabled">
+					<input type="checkbox" checked />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">今日头条</span>
+						<span class="freewrite-platform-hint">title ≤ 30</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row is-enabled">
+					<input type="checkbox" checked />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">小红书</span>
+						<span class="freewrite-platform-hint">title ≤ 20</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row">
+					<input type="checkbox" />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">微博</span>
+						<span class="freewrite-platform-hint">no title</span>
+					</div>
+				</div>
+				<div class="freewrite-platform-row">
+					<input type="checkbox" />
+					<div class="freewrite-platform-label">
+						<span class="freewrite-platform-name">哔哩哔哩专栏</span>
+						<span class="freewrite-platform-hint">title ≤ 80</span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="freewrite-section">
+			<h4>Drafts</h4>
+
+			<div class="freewrite-progress">
+				<div class="freewrite-progress-row is-done">
+					<span class="freewrite-progress-name">知乎</span>
+					<span class="freewrite-progress-status">done</span>
+				</div>
+				<div class="freewrite-progress-row is-done">
+					<span class="freewrite-progress-name">小红书</span>
+					<span class="freewrite-progress-status">done</span>
+				</div>
+			</div>
+
+			<div class="freewrite-draft">
+				<div class="freewrite-draft-head">
+					<span class="freewrite-draft-platform">知乎</span>
+					<span class="freewrite-draft-time">4.2s</span>
+				</div>
+				<div class="freewrite-draft-title">把一篇长文改写成知乎高赞回答，我用了三步</div>
+				<div class="freewrite-draft-body">很多人问：同一个选题，为什么在公众号能爆，在知乎却只有几十赞？
+
+答案不在文笔，而在「读者的问题」。知乎是问答场，标题要像问题，正文要像答案，第一句就给结论，再补三个论据。</div>
+				<div class="freewrite-draft-tags">
+					<span class="freewrite-tag">#写作</span>
+					<span class="freewrite-tag">#AI辅助</span>
+					<span class="freewrite-tag">#效率</span>
+				</div>
+				<div class="freewrite-draft-actions">
+					<button class="freewrite-button">Copy</button>
+					<button class="freewrite-button mod-cta">Publish</button>
+				</div>
+			</div>
+
+			<div class="freewrite-draft">
+				<div class="freewrite-draft-head">
+					<span class="freewrite-draft-platform">小红书</span>
+					<span class="freewrite-draft-time">2.8s</span>
+				</div>
+				<div class="freewrite-draft-title">长文变笔记的 3 个步骤</div>
+				<div class="freewrite-draft-body">一篇 3000 字的文章，压成小红书笔记只需三步：
+
+1. 标题写冲突，不要写总结
+2. 每段只留一个观点
+3. 结尾留一个可以照做的小步骤</div>
+				<div class="freewrite-draft-tags">
+					<span class="freewrite-tag">#写作</span>
+					<span class="freewrite-tag">#效率工具</span>
+				</div>
+				<div class="freewrite-draft-warnings">
+					<div class="freewrite-warning">Title is 14 characters, the limit is 20.</div>
+				</div>
+				<div class="freewrite-draft-actions">
+					<button class="freewrite-button">Copy</button>
+					<button class="freewrite-button mod-cta">Publish</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

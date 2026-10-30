@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node scripts/verify-release.mjs
+
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp main.js manifest.json styles.css dist/
+          cd dist && zip -r ../freewrite.zip main.js manifest.json styles.css
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: freewrite.zip
+          generate_release_notes: true
+          body: |
+            ## Installing
+
+            Download `main.js`, `manifest.json` and `styles.css` from the assets
+            below and copy them into `<your-vault>/.obsidian/plugins/freewrite/`.
+
+            Then enable **FreeWrite** under *Settings → Community plugins*.
+
+            See the [README](https://github.com/fenghaiju/freewrite#readme)
+            for the full instructions.

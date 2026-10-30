@@ -1,0 +1,350 @@
+/* freeWrite — multi-platform AI writing assistant for Obsidian. */
+
+.freewrite-workbench {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-4);
+	padding: var(--size-4-4);
+	overflow-y: auto;
+	height: 100%;
+}
+
+.freewrite-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	flex-wrap: wrap;
+}
+
+.freewrite-header-title h3 {
+	margin: 0;
+	font-size: var(--font-ui-large);
+}
+
+.freewrite-status {
+	font-size: var(--font-ui-smaller);
+	padding: 2px var(--size-4-2);
+	border-radius: var(--radius-s);
+	border: 1px solid var(--background-modifier-border);
+}
+
+.freewrite-status-on {
+	color: var(--text-success, var(--text-accent));
+}
+
+.freewrite-status-off {
+	color: var(--text-muted);
+}
+
+.freewrite-header-actions {
+	display: flex;
+	gap: var(--size-4-1);
+}
+
+.freewrite-icon-button {
+	background: none;
+	border: none;
+	box-shadow: none;
+	padding: var(--size-4-1);
+	cursor: pointer;
+	color: var(--text-muted);
+}
+
+.freewrite-icon-button:hover {
+	color: var(--text-normal);
+}
+
+.freewrite-section {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+}
+
+.freewrite-section > h4 {
+	margin: 0;
+	font-size: var(--font-ui-small);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+}
+
+.freewrite-empty {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	padding: var(--size-4-3) 0;
+}
+
+.freewrite-source-meta {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	font-size: var(--font-ui-small);
+}
+
+.freewrite-source-name {
+	font-weight: var(--font-semibold);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.freewrite-source-size {
+	color: var(--text-muted);
+	flex-shrink: 0;
+}
+
+.freewrite-source-actions,
+.freewrite-draft-actions {
+	display: flex;
+	gap: var(--size-4-2);
+	flex-wrap: wrap;
+}
+
+.freewrite-button {
+	background: var(--background-modifier-form-field);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	padding: var(--size-4-1) var(--size-4-3);
+	font-size: var(--font-ui-small);
+	cursor: pointer;
+	color: var(--text-normal);
+}
+
+.freewrite-button:hover:not(:disabled) {
+	background: var(--background-modifier-hover);
+}
+
+.freewrite-button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.freewrite-button.mod-cta {
+	background: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.freewrite-platform-list {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.freewrite-platform-row {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	padding: var(--size-4-1) var(--size-4-2);
+	border-radius: var(--radius-s);
+	border: 1px solid transparent;
+}
+
+.freewrite-platform-row.is-enabled {
+	background: var(--background-modifier-hover);
+	border-color: var(--background-modifier-border);
+}
+
+.freewrite-platform-row input[type="checkbox"] {
+	margin: 0;
+	flex-shrink: 0;
+}
+
+.freewrite-platform-label {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	flex: 1;
+	min-width: 0;
+}
+
+.freewrite-platform-name {
+	font-size: var(--font-ui-small);
+}
+
+.freewrite-platform-hint {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	flex-shrink: 0;
+}
+
+.freewrite-progress {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.freewrite-progress-row {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	font-size: var(--font-ui-smaller);
+	padding: var(--size-4-1) var(--size-4-2);
+	border-radius: var(--radius-s);
+	background: var(--background-secondary);
+}
+
+.freewrite-progress-row.is-running .freewrite-progress-status {
+	color: var(--text-accent);
+}
+
+.freewrite-progress-row.is-done .freewrite-progress-status {
+	color: var(--text-success, var(--text-accent));
+}
+
+.freewrite-progress-row.is-error .freewrite-progress-status {
+	color: var(--text-error);
+}
+
+.freewrite-draft {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+	padding: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-primary);
+}
+
+.freewrite-draft-head {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--size-4-2);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+}
+
+.freewrite-draft-platform {
+	font-weight: var(--font-semibold);
+	color: var(--text-accent);
+}
+
+.freewrite-draft-title {
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-semibold);
+	line-height: 1.4;
+}
+
+.freewrite-draft-body {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	white-space: pre-wrap;
+	max-height: 12em;
+	overflow: hidden;
+	line-height: 1.6;
+}
+
+.freewrite-draft-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-4-1);
+}
+
+.freewrite-tag {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-accent);
+	background: var(--background-modifier-hover);
+	padding: 1px var(--size-4-2);
+	border-radius: var(--radius-s);
+}
+
+.freewrite-warnings {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.freewrite-warning {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-warning);
+}
+
+/* Inline rewrite modal */
+
+.freewrite-inline-modal .freewrite-inline-original,
+.freewrite-inline-modal .freewrite-inline-preview {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.freewrite-inline-modal h4 {
+	margin: 0;
+	font-size: var(--font-ui-smaller);
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--text-muted);
+}
+
+.freewrite-inline-text {
+	white-space: pre-wrap;
+	max-height: 14em;
+	overflow-y: auto;
+	padding: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	background: var(--background-secondary);
+	font-size: var(--font-ui-small);
+	line-height: 1.6;
+}
+
+.freewrite-inline-options {
+	display: flex;
+	gap: var(--size-4-2);
+	align-items: center;
+}
+
+.freewrite-inline-instructions {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+}
+
+.freewrite-inline-instructions label {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+}
+
+.freewrite-inline-textarea {
+	width: 100%;
+	min-height: 4em;
+	resize: vertical;
+	font-size: var(--font-ui-small);
+}
+
+.freewrite-inline-actions {
+	display: flex;
+	gap: var(--size-4-2);
+	justify-content: flex-end;
+	margin-top: var(--size-4-3);
+}
+
+/* Settings */
+
+.freewrite-settings .freewrite-provider-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-1);
+	padding: var(--size-4-3);
+	margin-bottom: var(--size-4-3);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+}
+
+.freewrite-settings .freewrite-provider-card .setting-item {
+	border-top: none;
+	padding-top: var(--size-4-1);
+	padding-bottom: var(--size-4-1);
+}
+
+.freewrite-privacy-note {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	line-height: 1.6;
+}
+
+.freewrite-privacy-note p {
+	margin: 0;
+}

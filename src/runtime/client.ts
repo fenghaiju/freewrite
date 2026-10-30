@@ -1,0 +1,294 @@
+import type { RuntimeEvent } from "../types";
+
+/**
+ * Minimal HTTP client for the OpenCode server API.
+ *
+ * Only the endpoints freeWrite actually needs are implemented. All calls are
+ * made against the loopback interface of the locally spawned server.
+ */
+
+export interface OpenCodeClientOptions {
+	baseUrl: string;
+	/** Injectable for tests. */
+	fetchImpl?: typeof fetch;
+}
+
+export interface OpenCodeProviderInfo {
+	id: string;
+	name: string;
+	/** Model ids exposed by the provider. */
+	models: string[];
+	/** True when OpenCode reports credentials for this provider. */
+	connected: boolean;
+}
+
+export interface OpenCodeMessageResult {
+	text: string;
+	/** Cost reported by the server, when available. */
+	cost?: number;
+}
+
+export class OpenCodeError extends Error {
+	constructor(
+		message: string,
+		readonly status?: number,
+	) {
+		super(message);
+		this.name = "OpenCodeError";
+	}
+}
+
+interface RawPart {
+	id?: string;
+	sessionID?: string;
+	type?: string;
+	text?: string;
+	tool?: string;
+	state?: { status?: string; input?: unknown; output?: string };
+}
+
+interface RawEvent {
+	type?: string;
+	properties?: Record<string, unknown>;
+	payload?: unknown;
+}
+
+export class OpenCodeClient {
+	private readonly baseUrl: string;
+	private readonly fetchImpl: typeof fetch;
+
+	constructor(options: OpenCodeClientOptions) {
+		this.baseUrl = options.baseUrl.replace(/\/$/, "");
+		this.fetchImpl = options.fetchImpl ?? fetch;
+	}
+
+	/** Performs a JSON request against the server. */
+	private async request<T>(method: string, endpoint: string, body?: unknown): Promise<T> {
+		const response = await this.fetchImpl(`${this.baseUrl}${endpoint}`, {
+			method,
+			headers: body === undefined ? {} : { "content-type": "application/json" },
+			body: body === undefined ? undefined : JSON.stringify(body),
+		});
+		if (!response.ok) {
+			const text = await response.text().catch(() => "");
+			throw new OpenCodeError(
+				`OpenCode request failed (${response.status}) ${method} ${endpoint}${text ? `: ${text.slice(0, 400)}` : ""}`,
+				response.status,
+			);
+		}
+		if (response.status === 204) return undefined as T;
+		const text = await response.text();
+		if (!text) return undefined as T;
+		try {
+			return JSON.parse(text) as T;
+		} catch {
+			return text as unknown as T;
+		}
+	}
+
+	/** Checks that the server is reachable. */
+	async health(): Promise<{ healthy: boolean; version: string }> {
+		return this.request("GET", "/global/health");
+	}
+
+	/** Creates a new session and returns its id. */
+	async createSession(title?: string): Promise<string> {
+		const session = await this.request<{ id: string }>("POST", "/session", title ? { title } : {});
+		return session.id;
+	}
+
+	/** Lists the providers OpenCode knows about, with their model ids. */
+	async listProviders(): Promise<OpenCodeProviderInfo[]> {
+		const response = await this.request<{
+			all?: Array<{ id: string; name: string; models?: Record<string, unknown> }>;
+			connected?: string[];
+		}>("GET", "/provider");
+		const connected = new Set(response.connected ?? []);
+		return (response.all ?? []).map((provider) => ({
+			id: provider.id,
+			name: provider.name,
+			models: Object.keys(provider.models ?? {}),
+			connected: connected.has(provider.id),
+		}));
+	}
+
+	/** Stores credentials for a provider inside OpenCode's own auth store. */
+	async setAuth(providerId: string, apiKey: string): Promise<void> {
+		await this.request("PUT", `/auth/${encodeURIComponent(providerId)}`, { type: "api", key: apiKey });
+	}
+
+	/**
+	 * Sends a prompt and streams the assistant's output.
+	 *
+	 * Text parts are cumulative on the wire, so the client tracks what has
+	 * already been emitted per part id and only forwards the new suffix.
+	 *
+	 * @param sessionId - Session to send the prompt to.
+	 * @param prompt - Prompt text.
+	 * @param options - Model, agent and system prompt overrides.
+	 */
+	async *prompt(
+		sessionId: string,
+		prompt: string,
+		options: { model?: string; agent?: string; system?: string } = {},
+	): AsyncGenerator<RuntimeEvent, OpenCodeMessageResult, void> {
+		const body: Record<string, unknown> = {
+			parts: [{ type: "text", text: prompt }],
+		};
+		if (options.model) body.model = options.model;
+		if (options.agent) body.agent = options.agent;
+		if (options.system) body.system = options.system;
+
+		// The async endpoint returns immediately; the event stream carries the output.
+		await this.request("POST", `/session/${sessionId}/prompt_async`, body);
+
+		let text = "";
+
+		for await (const event of this.openEventStream(sessionId)) {
+			if (event.type === "text") {
+				text += event.text;
+				yield event;
+			} else if (event.type === "done") {
+				return { text: event.text || text };
+			} else if (event.type === "error") {
+				throw new OpenCodeError(event.message);
+			} else {
+				yield event;
+			}
+		}
+
+		return { text };
+	}
+
+	/**
+	 * Opens the server event stream and yields normalised runtime events.
+	 *
+	 * @param sessionId - Only events for this session are forwarded.
+	 */
+	async *openEventStream(sessionId: string): AsyncGenerator<RuntimeEvent, void, void> {
+		const controller = new AbortController();
+		const response = await this.fetchImpl(`${this.baseUrl}/event`, {
+			headers: { accept: "text/event-stream" },
+			signal: controller.signal,
+		});
+		if (!response.ok || !response.body) {
+			throw new OpenCodeError(`Unable to open the OpenCode event stream (${response.status})`, response.status);
+		}
+
+		const reader = response.body.getReader();
+		const decoder = new TextDecoder();
+		let buffer = "";
+		// Text parts arrive cumulatively; track how much of each part was shown.
+		const emitted = new Map<string, number>();
+
+		try {
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+				buffer += decoder.decode(value, { stream: true });
+
+				let newlineIndex = buffer.indexOf("\n");
+				while (newlineIndex !== -1) {
+					const line = buffer.slice(0, newlineIndex).trim();
+					buffer = buffer.slice(newlineIndex + 1);
+					newlineIndex = buffer.indexOf("\n");
+
+					if (!line.startsWith("data:")) continue;
+					const payload = line.slice(5).trim();
+					if (!payload) continue;
+
+					let parsed: unknown;
+					try {
+						parsed = JSON.parse(payload);
+					} catch {
+						continue;
+					}
+
+					const normalised = this.normaliseEvent(parsed, sessionId, emitted);
+					if (normalised) yield normalised;
+				}
+			}
+		} finally {
+			controller.abort();
+			reader.cancel().catch(() => undefined);
+		}
+	}
+
+	/**
+	 * Converts a raw server event into a runtime event.
+	 *
+	 * Text parts are cumulative on the wire, so only the part that has not been
+	 * emitted yet is forwarded.
+	 *
+	 * @param emitted - Tracks how many characters of each part were already sent.
+	 * @returns The event, or null when the event is not relevant for display.
+	 */
+	private normaliseEvent(raw: unknown, sessionId: string, emitted: Map<string, number>): RuntimeEvent | null {
+		if (typeof raw !== "object" || raw === null) return null;
+		const envelope = raw as RawEvent;
+
+		// The global stream wraps events in { directory, payload }.
+		const event = (envelope.payload ?? raw) as RawEvent;
+		const type = event.type;
+		if (!type) return null;
+
+		const properties = event.properties ?? {};
+
+		switch (type) {
+			case "message.part.updated": {
+				const part = properties.part as RawPart | undefined;
+				if (!part) return null;
+				if (part.sessionID && part.sessionID !== sessionId) return null;
+
+				const key = part.id ?? "";
+
+				if (part.type === "text" && typeof part.text === "string" && part.text.length > 0) {
+					const sent = emitted.get(key) ?? 0;
+					if (part.text.length <= sent) return null;
+					const delta = part.text.slice(sent);
+					emitted.set(key, part.text.length);
+					return { type: "text", text: delta };
+				}
+				if (part.type === "reasoning" && typeof part.text === "string" && part.text.length > 0) {
+					const sent = emitted.get(key) ?? 0;
+					if (part.text.length <= sent) return null;
+					const delta = part.text.slice(sent);
+					emitted.set(key, part.text.length);
+					return { type: "reasoning", text: delta };
+				}
+				if (part.type === "tool") {
+					const state = part.state ?? {};
+					return {
+						type: "tool",
+						name: part.tool ?? "tool",
+						status: state.status ?? "unknown",
+						input: state.input ? JSON.stringify(state.input) : undefined,
+						output: state.output,
+					};
+				}
+				return null;
+			}
+			case "session.error": {
+				const error = properties.error as { data?: { message?: string } } | undefined;
+				return { type: "error", message: error?.data?.message ?? "The OpenCode session reported an error" };
+			}
+			case "session.idle": {
+				const eventSession = properties.sessionID as string | undefined;
+				if (eventSession && eventSession !== sessionId) return null;
+				return { type: "done", text: "" };
+			}
+			default:
+				return null;
+		}
+	}
+
+	/** Aborts the running turn in a session. */
+	async abort(sessionId: string): Promise<void> {
+		await this.request("POST", `/session/${sessionId}/abort`);
+	}
+
+	/** Deletes a session. */
+	async deleteSession(sessionId: string): Promise<void> {
+		await this.request("DELETE", `/session/${sessionId}`);
+	}
+}

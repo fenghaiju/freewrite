@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>freeWrite settings</title>
+<link rel="stylesheet" href="../../styles.css" />
+<link rel="stylesheet" href="mockup.css" />
+</head>
+<body>
+	<div class="settings-container">
+		<div class="settings-nav">
+			<div class="settings-nav-title">Settings</div>
+			<div class="settings-nav-item">General</div>
+			<div class="settings-nav-item">Appearance</div>
+			<div class="settings-nav-item">Hotkeys</div>
+			<div class="settings-nav-item">Keychain</div>
+			<div class="settings-nav-title">Core plugins</div>
+			<div class="settings-nav-item">File recovery</div>
+			<div class="settings-nav-title">Community plugins</div>
+			<div class="settings-nav-item is-active">FreeWrite</div>
+		</div>
+
+		<div class="settings-body freewrite-settings">
+			<div class="settings-title">FreeWrite</div>
+
+			<div class="setting-item setting-item-heading">
+				<div class="setting-item-info">
+					<div class="setting-item-name">OpenCode</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">OpenCode status</div>
+					<div class="setting-item-description">Connected on http://127.0.0.1:41234</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">OpenCode executable</div>
+					<div class="setting-item-description">Path to the opencode binary. Leave empty to detect it automatically.</div>
+				</div>
+				<div class="setting-item-control">
+					<input type="text" placeholder="opencode" value="" />
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Detect OpenCode</div>
+					<div class="setting-item-description">Look for the executable on the system path and in the usual install locations.</div>
+				</div>
+				<div class="setting-item-control">
+					<button class="freewrite-button">Detect</button>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Working directory</div>
+					<div class="setting-item-description">Directory OpenCode runs in. Leave empty to use the vault root.</div>
+				</div>
+				<div class="setting-item-control">
+					<input type="text" placeholder="Vault root" value="" />
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Restart the runtime</div>
+					<div class="setting-item-description">Stop the OpenCode server and start it again, for example after changing providers.</div>
+				</div>
+				<div class="setting-item-control">
+					<button class="freewrite-button">Restart</button>
+				</div>
+			</div>
+
+			<div class="setting-item setting-item-heading">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Model</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Default model</div>
+					<div class="setting-item-description">Model used for rewriting, in provider/model form. Leave empty to use the OpenCode default.</div>
+				</div>
+				<div class="setting-item-control">
+					<select>
+						<option selected>openai/gpt-4o</option>
+						<option>anthropic/claude-sonnet-4-5</option>
+						<option>openai/gpt-4o-mini</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Load the model list</div>
+					<div class="setting-item-description">Ask OpenCode which models it exposes. OpenCode keeps the catalogue, so this is where it comes from.</div>
+				</div>
+				<div class="setting-item-control">
+					<button class="freewrite-button">Load</button>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Agent</div>
+					<div class="setting-item-description">OpenCode agent used for the rewrite. The build agent can read files, the plan agent cannot.</div>
+				</div>
+				<div class="setting-item-control">
+					<select><option>Build</option><option>Plan</option></select>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Extra system prompt</div>
+					<div class="setting-item-description">Appended to every rewrite request. Use it to set a house style or a target audience.</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Allow web access</div>
+					<div class="setting-item-description">Let the model fetch web pages while rewriting. Off by default.</div>
+				</div>
+				<div class="setting-item-control">
+					<div class="checkbox-container"></div>
+				</div>
+			</div>
+
+			<div class="setting-item setting-item-heading">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Providers</div>
+				</div>
+			</div>
+
+			<div class="freewrite-provider-card">
+				<div class="setting-item">
+					<div class="setting-item-info">
+						<div class="setting-item-name">Provider 1</div>
+						<div class="setting-item-description">The provider id must match the id OpenCode uses, for example anthropic or openai.</div>
+					</div>
+					<div class="setting-item-control">
+						<input type="text" placeholder="anthropic" value="openai" />
+						<input type="text" placeholder="Display name" value="OpenAI" />
+					</div>
+				</div>
+				<div class="setting-item">
+					<div class="setting-item-info">
+						<div class="setting-item-name">Base URL</div>
+						<div class="setting-item-description">Endpoint of an OpenAI-compatible or proxy service. Leave empty for the default.</div>
+					</div>
+					<div class="setting-item-control">
+						<input type="text" placeholder="https://api.example.com/v1" value="https://api.openai.com/v1" />
+					</div>
+				</div>
+				<div class="setting-item">
+					<div class="setting-item-info">
+						<div class="setting-item-name">API key</div>
+						<div class="setting-item-description">Stored in OpenCode's credential store when you sync. Never sent anywhere else.</div>
+					</div>
+					<div class="setting-item-control">
+						<input type="text" placeholder="sk-…" value="sk-••••••••••••••••" />
+					</div>
+				</div>
+				<div class="setting-item">
+					<div class="setting-item-info">
+						<div class="setting-item-name">Models</div>
+						<div class="setting-item-description">Comma separated list of model ids, for example gpt-4o, gpt-4o-mini.</div>
+					</div>
+					<div class="setting-item-control">
+						<input type="text" placeholder="gpt-4o, gpt-4o-mini" value="gpt-4o, gpt-4o-mini" />
+					</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-control">
+					<button class="freewrite-button mod-cta">Add a provider</button>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Sync credentials to OpenCode</div>
+					<div class="setting-item-description">Push the API keys of the providers above into OpenCode's credential store.</div>
+				</div>
+				<div class="setting-item-control">
+					<button class="freewrite-button">Sync now</button>
+				</div>
+			</div>
+
+			<div class="setting-item setting-item-heading">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Publishing service</div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Use a publishing service</div>
+					<div class="setting-item-description">Post the packaged drafts to your own endpoint. The plugin sends nothing when this is off.</div>
+				</div>
+				<div class="setting-item-control">
+					<div class="checkbox-container"></div>
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Endpoint</div>
+					<div class="setting-item-description">Full URL of the endpoint that receives the drafts.</div>
+				</div>
+				<div class="setting-item-control">
+					<input type="text" placeholder="https://your-app.example.com/api/publish" value="https://your-app.example.com/api/publish" />
+				</div>
+			</div>
+
+			<div class="setting-item">
+				<div class="setting-item-info">
+					<div class="setting-item-name">Send test</div>
+					<div class="setting-item-description">Send a minimal payload to check that the endpoint accepts the request.</div>
+				</div>
+				<div class="setting-item-control">
+					<button class="freewrite-button">Send test</button>
+				</div>
+			</div>
+
+			<div class="freewrite-privacy-note">
+				<p>freeWrite makes no network requests on its own. It talks to the OpenCode server it starts on 127.0.0.1, and to the publishing endpoint you configure. Model requests are made by OpenCode, using the credentials stored in your own OpenCode profile.</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
